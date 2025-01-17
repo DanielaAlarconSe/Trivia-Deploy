@@ -12,7 +12,8 @@
 	<groupId>com.ciber</groupId>
 	<artifactId>ciber</artifactId>
 	<version>0.1</version>
-	<packaging>war</packaging>
+	<!-- <packaging>war</packaging> -->
+	<packaging>jar</packaging>
 	<name>ciber</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -38,10 +39,15 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.boot</groupId> -->
+		<!-- <artifactId>spring-boot-starter-tomcat</artifactId> -->
+		<!-- <scope>provided</scope> -->
+		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Spring security -->
@@ -127,6 +133,13 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
+
+		<!-- Email -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+			<version>2.5.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -144,6 +157,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>docker-spring-boot</finalName>
 	</build>
 
 	<dependencyManagement>
