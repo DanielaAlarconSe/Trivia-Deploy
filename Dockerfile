@@ -22,5 +22,5 @@ COPY --from=build /Trivia-Deploy/target/docker-spring-boot.jar docker-spring-boo
 EXPOSE 8080
 
 # Define the entry point for the container
-ENTRYPOINT ["java", "-jar", "docker-spring-boot.jar"]
-#
+ENTRYPOINT ["java", "-Xms512m", "-Xmx1024m", "-jar", "docker-spring-boot.jar"]
+
