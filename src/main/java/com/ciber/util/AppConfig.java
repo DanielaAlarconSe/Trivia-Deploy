@@ -53,7 +53,7 @@ public class AppConfig {
     @Bean
     public DataSource dataSourceLogin() {
         return DataSourceBuilder.create()
-                .url(datasourceUrl.replace("ConsultaDB", "LoginDB")) // Ajusta el nombre de la base de datos
+                .url(datasourceUrl)
                 .username(datasourceUsername)
                 .password(datasourcePassword)
                 .driverClassName(datasourceDriverClassName)
@@ -63,7 +63,7 @@ public class AppConfig {
     @Bean
     public DataSource dataSourceEjecucion() {
         return DataSourceBuilder.create()
-                .url(datasourceUrl.replace("ConsultaDB", "EjecucionDB")) // Ajusta el nombre de la base de datos
+                .url(datasourceUrl)
                 .username(datasourceUsername)
                 .password(datasourcePassword)
                 .driverClassName(datasourceDriverClassName)
