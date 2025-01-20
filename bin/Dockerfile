@@ -1,22 +1,26 @@
-# Etapa 1: Compilación
-FROM maven:3.6.0-jdk-8 AS build
+# Optimized and Organized Dockerfile
+
+# Stage 1: Build stage
+FROM maven:3.6.3-jdk-8 AS build
 WORKDIR /Trivia-Deploy
 
-# Copiar el contenido del proyecto al contenedor
-COPY . .
+# Copy source code and Maven configuration
+COPY src /Trivia-Deploy/src
+COPY pom.xml /Trivia-Deploy
 
-# Ejecutar el empaquetado del proyecto con Maven
+# Build the application and skip tests to speed up the process
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Ejecución
-FROM openjdk:8-jdk-alpine
+# Stage 2: Execution stage
+FROM openjdk:8-jre
 WORKDIR /Trivia-Deploy
 
-# Copiar el archivo JAR generado desde la etapa de compilación
+# Copy the built JAR file from the build stage
 COPY --from=build /Trivia-Deploy/target/docker-spring-boot.jar docker-spring-boot.jar
 
-# Comando para ejecutar la aplicación
-ENTRYPOINT ["java", "-jar", "docker-spring-boot.jar"]
-
-# Exponer el puerto en el que tu aplicación escucha
+# Expose the application port
 EXPOSE 8080
+
+# Define the entry point for the container
+ENTRYPOINT ["java", "-Xms512m", "-Xmx1024m", "-jar", "docker-spring-boot.jar"]
+
