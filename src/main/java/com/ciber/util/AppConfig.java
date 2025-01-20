@@ -2,76 +2,71 @@ package com.ciber.util;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jndi.JndiTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@Component
 public class AppConfig {
-	
-	@Value("${spring.profiles.active}")
-	private String perfilSeleccionado;
 
-	@Value("${spring.datasource.url}")
-	private String datasourceLocal;
-	@Autowired
-	private DataSource dataSource;
-	
-	
-	@Bean(name = "JDBCTemplateConsulta")
-	public JdbcTemplate jdbcTemplateConsultasjdbc() throws Exception {
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
-		jdbcTemplate.setDataSource(dataSource);
+    @Value("${spring.datasource.url}")
+    private String datasourceUrl;
 
-		return jdbcTemplate;
-	}
-	
-	
-	@Bean(name = "JDBCTemplateLogin")
-	public JdbcTemplate jdbcTemplateLogin() throws Exception {
+    @Value("${spring.datasource.username}")
+    private String datasourceUsername;
 
-		DataSource dataSource = null;
+    @Value("${spring.datasource.password}")
+    private String datasourcePassword;
 
-		if (perfilSeleccionado.equals("local")) {
+    @Value("${spring.datasource.driver-class-name}")
+    private String datasourceDriverClassName;
 
-			dataSource = (DataSource) new JndiTemplate().lookup("jboss/datasources/LoginDS");
+    @Bean(name = "JDBCTemplateConsulta")
+    public JdbcTemplate jdbcTemplateConsultas() {
+        return new JdbcTemplate(dataSourceConsulta());
+    }
 
-		} else if (perfilSeleccionado.equals("test") || perfilSeleccionado.equals("produccion")) {
+    @Bean(name = "JDBCTemplateLogin")
+    public JdbcTemplate jdbcTemplateLogin() {
+        return new JdbcTemplate(dataSourceLogin());
+    }
 
-			dataSource = (DataSource) new JndiTemplate().lookup("java:jboss/datasources/LoginDS");
+    @Bean(name = "JDBCTemplateEjecucion")
+    public JdbcTemplate jdbcTemplateEjecucion() {
+        return new JdbcTemplate(dataSourceEjecucion());
+    }
 
-		}
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
-		jdbcTemplate.setDataSource(dataSource);
+    @Bean
+    public DataSource dataSourceConsulta() {
+        return DataSourceBuilder.create()
+                .url(datasourceUrl)
+                .username(datasourceUsername)
+                .password(datasourcePassword)
+                .driverClassName(datasourceDriverClassName)
+                .build();
+    }
 
-		return jdbcTemplate;
-	}
-	
-	@Bean(name = "JDBCTemplateEjecucion")
-	public JdbcTemplate jdbcTemplateEjecucion() throws Exception {
+    @Bean
+    public DataSource dataSourceLogin() {
+        return DataSourceBuilder.create()
+                .url(datasourceUrl.replace("ConsultaDB", "LoginDB")) // Ajusta el nombre de la base de datos
+                .username(datasourceUsername)
+                .password(datasourcePassword)
+                .driverClassName(datasourceDriverClassName)
+                .build();
+    }
 
-		DataSource dataSource = null;
-
-		if (perfilSeleccionado.equals("local")) {
-
-			dataSource = (DataSource) new JndiTemplate().lookup("jboss/datasources/EjecucionDS");
-
-		} else if (perfilSeleccionado.equals("test") || perfilSeleccionado.equals("produccion")) {
-
-			dataSource = (DataSource) new JndiTemplate().lookup("java:jboss/datasources/EjecucionDS");
-
-		}
-		JdbcTemplate jdbcTemplate = new JdbcTemplate();
-		jdbcTemplate.setDataSource(dataSource);
-
-		return jdbcTemplate;
-	}
-
+    @Bean
+    public DataSource dataSourceEjecucion() {
+        return DataSourceBuilder.create()
+                .url(datasourceUrl.replace("ConsultaDB", "EjecucionDB")) // Ajusta el nombre de la base de datos
+                .username(datasourceUsername)
+                .password(datasourcePassword)
+                .driverClassName(datasourceDriverClassName)
+                .build();
+    }
 }
