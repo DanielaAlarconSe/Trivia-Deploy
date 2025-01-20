@@ -7,6 +7,8 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
@@ -38,6 +40,21 @@ public class AppConfig {
     @Bean(name = "JDBCTemplateEjecucion")
     public JdbcTemplate jdbcTemplateEjecucion() {
         return new JdbcTemplate(dataSourceEjecucion());
+    }
+    
+    @Bean
+    public DataSource dataSource() {
+        return DataSourceBuilder.create()
+        		.url(datasourceUrl)
+                .username(datasourceUsername)
+                .password(datasourcePassword)
+                .driverClassName(datasourceDriverClassName)
+                .build();
+    }
+    
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean
