@@ -1,26 +1,16 @@
-# Optimized and Organized Dockerfile
+# Usar una imagen base de OpenJDK
+FROM openjdk:11-jre-slim
 
-# Stage 1: Build stage
-FROM maven:3.6.3-jdk-8 AS build
-WORKDIR /Trivia-Deploy
+# Establecer el directorio de trabajo
+WORKDIR /app
 
-# Copy source code and Maven configuration
-COPY src /Trivia-Deploy/src
-COPY pom.xml /Trivia-Deploy
+# Copiar el archivo JAR de la aplicación al contenedor
+COPY target/docker-spring-boot.jar app.jar
 
-# Build the application and skip tests to speed up the process
-RUN mvn clean package -DskipTests
-
-# Stage 2: Execution stage
-FROM openjdk:8-jre
-WORKDIR /Trivia-Deploy
-
-# Copy the built JAR file from the build stage
-COPY --from=build /Trivia-Deploy/target/docker-spring-boot.jar docker-spring-boot.jar
-
-# Expose the application port
+# Exponer el puerto en el que la aplicación se ejecutará
 EXPOSE 8080
 
-# Define the entry point for the container
-ENTRYPOINT ["java", "-Xms512m", "-Xmx1024m", "-jar", "docker-spring-boot.jar"]
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
 
